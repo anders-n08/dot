@@ -88,6 +88,13 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'k-takata/minpac', {'type': 'opt'}
 Plug 'atelierbram/Base2Tone-vim'
 
+" Flutter tools.
+Plug 'nvim-lua/plenary.nvim'
+Plug 'akinsho/flutter-tools.nvim'
+
+" Editor-config.
+Plug 'editorconfig/editorconfig-vim'
+
 call plug#end()
 
 " -----------------------------------------------------------------------------
@@ -99,6 +106,11 @@ let g:airline_theme='minimalist'
 " -----------------------------------------------------------------------------
 "   -- LSP --
 " -----------------------------------------------------------------------------
+
+sign define LspDiagnosticsSignError text=!
+sign define LspDiagnosticsSignWarning text=?
+" sign define LspDiagnosticsSignInformation text=i
+" sign define LspDiagnosticsSignHint text=h
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -121,24 +133,18 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  buf_set_keymap("n", "<leader>F", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { "pyright", "rust_analyzer", "tsserver" }
+local servers = { "zls" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
 end
@@ -148,6 +154,12 @@ EOF
 
 lua <<EOF
 require'lspconfig'.zls.setup{}
+EOF
+
+" -- Pyright (python)
+
+lua <<EOF
+require'lspconfig'.pyright.setup{}
 EOF
 
 " -----------------------------------------------------------------------------
@@ -186,6 +198,10 @@ nnoremap <leader>f <cmd>Telescope find_files<cr>
 nnoremap <leader>s <cmd>Telescope live_grep<cr>
 nnoremap <leader>b <cmd>Telescope buffers<cr>
 nnoremap <leader>h <cmd>Telescope help_tags<cr>
+
+lua <<EOF
+    require("telescope").load_extension("flutter")
+EOF
 
 " -----------------------------------------------------------------------------
 "   -- Auto-complete (nvim-compe) --
@@ -229,3 +245,21 @@ inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 set termguicolors
 colorscheme Base2Tone_LakeDark
 let g:airline_theme='Base2Tone_LakeDark'
+
+" --------------------------------------------------------------------------------
+"  -- Flutter tools -- 
+" --------------------------------------------------------------------------------
+
+lua << EOF
+  require("flutter-tools").setup{
+    widget_guides = {
+        enabled = false,
+    },
+    closing_tags = {
+        highlight = "ErrorMsg", 
+        prefix = ">",
+        enabled = true,
+      }
+  }
+EOF
+
