@@ -101,6 +101,11 @@ Plug 'b3nj5m1n/kommentary'
 " Navigate between vim and tmux.
 Plug 'christoomey/vim-tmux-navigator'
 
+" Snip editor - only install this to shutup warnings from nvim-compe at the
+" moment (I'll maybe revisit snippets later).
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+
 call plug#end()
 
 " -----------------------------------------------------------------------------
