@@ -106,6 +106,9 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 
+" Tab-bar plugin.
+Plug 'romgrk/barbar.nvim'
+
 call plug#end()
 
 " -----------------------------------------------------------------------------
@@ -324,4 +327,18 @@ lua << EOF
       }
   }
 EOF
+
+" --------------------------------------------------------------------------------
+"  -- Barbar tab-bar -- 
+" --------------------------------------------------------------------------------
+
+" This plugin has a lot more to offer, but this is a clean look.
+
+let bufferline = get(g:, 'bufferline', {})
+let bufferline.icons = v:false
+
+let bufferline.icon_separator_active = ''
+let bufferline.icon_separator_inactive = ''
+let bufferline.icon_close_tab = ''
+let bufferline.icon_close_tab_modified = ''
 
