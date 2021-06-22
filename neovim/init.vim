@@ -50,9 +50,9 @@ let mapleader=","   " leader is comma
 " Simple escape from terminal mode.
 tnoremap <Esc> <C-\><C-n>
 
-" Select buffer.
-nnoremap <tab> :bn<CR>
-nnoremap <s-tab> :bp<CR>
+" Select buffer. Moved to barbar.
+" nnoremap <tab> :bn<CR>
+" nnoremap <s-tab> :bp<CR>
 
 " Split navigation.
 nnoremap <c-j> <c-w><c-j>
@@ -350,4 +350,7 @@ let bufferline.icon_separator_active = ''
 let bufferline.icon_separator_inactive = ''
 let bufferline.icon_close_tab = ''
 let bufferline.icon_close_tab_modified = ''
+
+nnoremap <silent>    <s-tab> :BufferPrevious<CR>
+nnoremap <silent>    <tab> :BufferNext<CR>
 
