@@ -158,7 +158,7 @@ end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { "zls", "pyright" }
+local servers = { "zls", "pyright", "phpactor" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
 end
@@ -175,6 +175,15 @@ EOF
 
 lua <<EOF
 require'lspconfig'.pyright.setup{
+}
+EOF
+
+" Note - phpactor is currently installed in /Users/anders/Projects/a00n08/lsp/phpactor
+" and linked from ~/.local/bin. Without phpactor available globally the LSP
+" for PHP will silently not work. 
+
+lua <<EOF
+require'lspconfig'.phpactor.setup{
 }
 EOF
 
