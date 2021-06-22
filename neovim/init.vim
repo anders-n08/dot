@@ -187,6 +187,9 @@ require'lspconfig'.phpactor.setup{
 }
 EOF
 
+" Do prevent 'jumping' let's always show the sign column.
+set signcolumn=yes
+
 " -----------------------------------------------------------------------------
 "   -- Treesitter --
 " -----------------------------------------------------------------------------
