@@ -109,6 +109,9 @@ Plug 'hrsh7th/vim-vsnip-integ'
 " Tab-bar plugin.
 Plug 'romgrk/barbar.nvim'
 
+" Support for zig programming (format, build etc).
+Plug 'ziglang/zig.vim'
+
 call plug#end()
 
 " -----------------------------------------------------------------------------
