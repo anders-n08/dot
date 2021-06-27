@@ -75,6 +75,7 @@ Plug 'nvim-treesitter/playground'
 
 " LSP.
 Plug 'neovim/nvim-lspconfig'
+Plug 'glepnir/lspsaga.nvim'
 
 " Auto-complete.
 Plug 'hrsh7th/nvim-compe'
@@ -145,19 +146,36 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', 'gc', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>luak vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap("n", "<leader>F", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    vim.cmd("nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>")
+    vim.cmd("nnoremap <silent> gD <cmd>lua vim.lsp.buf.declaration()<CR>")
+    vim.cmd("nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>")
+    vim.cmd("nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<CR>")
+    vim.cmd("nnoremap <silent> ca :Lspsaga code_action<CR>")
+    vim.cmd("nnoremap <silent> K :Lspsaga hover_doc<CR>")
+    -- vim.cmd('nnoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>')
+    vim.cmd("nnoremap <silent> <C-p> :Lspsaga diagnostic_jump_prev<CR>")
+    vim.cmd("nnoremap <silent> <C-n> :Lspsaga diagnostic_jump_next<CR>")
+    -- scroll down hover doc or scroll in definition preview
+    vim.cmd("nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>")
+    -- scroll up hover doc
+    vim.cmd("nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
+    vim.cmd('command! -nargs=0 LspVirtualTextToggle lua require("lsp/virtual_text").toggle()')
 
+    local saga = require 'lspsaga'
+    saga.init_lsp_saga()
 end
+
+-- Zig
+require'lspconfig'.zls.setup{}
+
+-- Pyright
+require'lspconfig'.pyright.setup{}
+
+-- Note - phpactor is currently installed in /Users/anders/Projects/a00n08/lsp/phpactor
+-- and linked from ~/.local/bin. Without phpactor available globally the LSP
+-- for PHP will silently not work. 
+
+require'lspconfig'.phpactor.setup{}
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
@@ -165,30 +183,9 @@ local servers = { "zls", "pyright", "phpactor" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach }
 end
+
 EOF
 
-" -- Zig
-
-lua <<EOF
-require'lspconfig'.zls.setup{
-}
-EOF
-
-" -- Pyright (python)
-
-lua <<EOF
-require'lspconfig'.pyright.setup{
-}
-EOF
-
-" Note - phpactor is currently installed in /Users/anders/Projects/a00n08/lsp/phpactor
-" and linked from ~/.local/bin. Without phpactor available globally the LSP
-" for PHP will silently not work. 
-
-lua <<EOF
-require'lspconfig'.phpactor.setup{
-}
-EOF
 
 " Do prevent 'jumping' let's always show the sign column.
 set signcolumn=yes
