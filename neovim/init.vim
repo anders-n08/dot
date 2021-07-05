@@ -77,6 +77,9 @@ Plug 'nvim-treesitter/playground'
 Plug 'neovim/nvim-lspconfig'
 Plug 'glepnir/lspsaga.nvim'
 
+" Show function signature when you type (LSP thingy).
+Plug 'ray-x/lsp_signature.nvim'
+
 " Auto-complete.
 Plug 'hrsh7th/nvim-compe'
 
@@ -136,16 +139,16 @@ local nvim_lsp = require('lspconfig')
 -- Use an on_attach function to only map the following keys 
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+    local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+    local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-  --Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+    --Enable completion triggered by <c-x><c-o>
+    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
+    -- Mappings.
+    local opts = { noremap=true, silent=true }
 
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
     vim.cmd("nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>")
     vim.cmd("nnoremap <silent> gD <cmd>lua vim.lsp.buf.declaration()<CR>")
     vim.cmd("nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>")
@@ -161,9 +164,18 @@ local on_attach = function(client, bufnr)
     vim.cmd("nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
     vim.cmd('command! -nargs=0 LspVirtualTextToggle lua require("lsp/virtual_text").toggle()')
 
-    local saga = require 'lspsaga'
-    saga.init_lsp_saga()
+    require "lsp_signature".on_attach({
+        bind = true, -- This is mandatory, otherwise border config won't get registered.
+        handler_opts = {
+            border = "single",
+            use_lspsaga = true
+        }
+    })
+
 end
+
+-- LSP saga for nice popups.
+require'lspsaga'.init_lsp_saga()
 
 -- Zig
 require'lspconfig'.zls.setup{}
@@ -185,7 +197,6 @@ for _, lsp in ipairs(servers) do
 end
 
 EOF
-
 
 " Do prevent 'jumping' let's always show the sign column.
 set signcolumn=yes
