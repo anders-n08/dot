@@ -240,6 +240,8 @@ nnoremap <leader>s <cmd>Telescope live_grep<cr>
 nnoremap <leader>b <cmd>Telescope buffers<cr>
 nnoremap <leader>h <cmd>Telescope help_tags<cr>
 nnoremap <leader>t <cmd>Telescope treesitter<cr>
+nnoremap <leader>q <cmd>Telescope quickfix<cr>
+nnoremap <leader>r <cmd>Telescope registers<cr>
 
 lua <<EOF
     require("telescope").load_extension("flutter")
