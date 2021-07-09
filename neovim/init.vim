@@ -164,8 +164,6 @@ local on_attach = function(client, bufnr)
     vim.cmd("nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
     vim.cmd('command! -nargs=0 LspVirtualTextToggle lua require("lsp/virtual_text").toggle()')
 
-    -- See issue for discussions regarding the LSP signature / saga functionality.
-    -- https://github.com/ray-x/lsp_signature.nvim/issues/1
     require "lsp_signature".on_attach({
         bind = true, -- This is mandatory, otherwise border config won't get registered.
         handler_opts = {
@@ -176,7 +174,6 @@ local on_attach = function(client, bufnr)
 
 end
 
--- LSP saga for nice popups.
 require'lspsaga'.init_lsp_saga()
 
 -- Zig
