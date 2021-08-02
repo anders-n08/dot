@@ -6,8 +6,9 @@ filetype on
 filetype plugin indent on
 
 set hidden              " Retain buffer when abandoned.
-set number
-set relativenumber
+" set number
+" set relativenumber
+set nonumber
 set showcmd
 set wildmenu            " Visual autocomplete for command menu.
 set showmatch           " Highlight matching brace.
