@@ -117,6 +117,8 @@ Plug 'romgrk/barbar.nvim'
 " Support for zig programming (format, build etc).
 Plug 'ziglang/zig.vim'
 
+" Rust 
+Plug 'rust-lang/rust.vim'
 call plug#end()
 
 " -----------------------------------------------------------------------------
@@ -372,4 +374,8 @@ let bufferline.icon_close_tab_modified = ''
 
 nnoremap <silent>    <s-tab> :BufferPrevious<CR>
 nnoremap <silent>    <tab> :BufferNext<CR>
+" --------------------------------------------------------------------------------
+"  -- Rust -- 
+" --------------------------------------------------------------------------------
 
+let g:rustfmt_autosave = 1
