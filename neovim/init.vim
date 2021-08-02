@@ -379,3 +379,11 @@ nnoremap <silent>    <tab> :BufferNext<CR>
 " --------------------------------------------------------------------------------
 
 let g:rustfmt_autosave = 1
+" --------------------------------------------------------------------------------
+"  -- Kommentary -- 
+" --------------------------------------------------------------------------------
+lua << EOF
+require('kommentary.config').configure_language("default", {
+    prefer_single_line_comments = true,
+})
+EOF
