@@ -121,6 +121,10 @@ Plug 'romgrk/barbar.nvim'
 " Support for zig programming (format, build etc).
 Plug 'ziglang/zig.vim'
 
+" DAP debug protocol.
+Plug 'mfussenegger/nvim-dap'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'rcarriga/nvim-dap-ui'
 " Rust 
 Plug 'rust-lang/rust.vim'
 call plug#end()
@@ -378,16 +382,132 @@ let bufferline.icon_close_tab_modified = ''
 
 nnoremap <silent>    <s-tab> :BufferPrevious<CR>
 nnoremap <silent>    <tab> :BufferNext<CR>
+
+" --------------------------------------------------------------------------------
+"  -- DAP debug protocol -- 
+" --------------------------------------------------------------------------------
+
+lua<<EOF
+
+local dap = require('dap')
+dap.adapters.lldb = {
+  type = 'executable',
+  command = '/usr/local/opt/llvm/bin/lldb-vscode',
+  name = 'lldb'
+}
+
+dap.configurations.cpp = {
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {},
+
+    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+    --
+    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+    --
+    -- Otherwise you might get the following error:
+    --
+    --    Error on launch: Failed to attach to the target process
+    --
+    -- But you should be aware of the implications:
+    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+    runInTerminal = false,
+  },
+}
+
+-- If you want to use this for rust and c, add something like this:
+
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.zig = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
+
+EOF
+
+" --------------------------------------------------------------------------------
+"  -- DAP virtual text -- 
+" --------------------------------------------------------------------------------
+
+lua<<EOF
+vim.g.dap_virtual_text = true
+EOF
+
+" --------------------------------------------------------------------------------
+"  -- DAP UI -- 
+" --------------------------------------------------------------------------------
+
+lua<<EOF
+
+require("dapui").setup({
+  icons = { expanded = "▾", collapsed = "▸" },
+  mappings = {
+    -- Use a table to apply multiple mappings
+    expand = { "<CR>", "<2-LeftMouse>" },
+    open = "o",
+    remove = "d",
+    edit = "e",
+    repl = "r",
+  },
+  sidebar = {
+    open_on_start = true,
+    -- You can change the order of elements in the sidebar
+    elements = {
+      -- Provide as ID strings or tables with "id" and "size" keys
+      {
+        id = "scopes",
+        size = 0.25, -- Can be float or integer > 1
+      },
+      { id = "breakpoints", size = 0.25 },
+      { id = "stacks", size = 0.25 },
+      { id = "watches", size = 00.25 },
+    },
+    width = 40,
+    position = "left", -- Can be "left" or "right"
+  },
+  tray = {
+    open_on_start = true,
+    elements = { "repl" },
+    height = 10,
+    position = "bottom", -- Can be "bottom" or "top"
+  },
+  floating = {
+    max_height = nil, -- These can be integers or a float between 0 and 1.
+    max_width = nil, -- Floats will be treated as percentage of your screen.
+    mappings = {
+      close = { "q", "<Esc>" },
+    },
+  },
+  windows = { indent = 1 },
+})
+
+EOF
+
 " --------------------------------------------------------------------------------
 "  -- Rust -- 
 " --------------------------------------------------------------------------------
 
 let g:rustfmt_autosave = 1
+
 " --------------------------------------------------------------------------------
 "  -- Kommentary -- 
 " --------------------------------------------------------------------------------
+
 lua << EOF
 require('kommentary.config').configure_language("default", {
     prefer_single_line_comments = true,
 })
+EOF
+
+" --------------------------------------------------------------------------------
+"  -- Git Worktree -- 
+" --------------------------------------------------------------------------------
+
+lua << EOF
+    vim.cmd("nnoremap <leader> w <cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<CR>")
 EOF
