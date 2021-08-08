@@ -125,8 +125,13 @@ Plug 'ziglang/zig.vim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'rcarriga/nvim-dap-ui'
+
 " Rust 
 Plug 'rust-lang/rust.vim'
+
+" Git Worktree
+Plug 'ThePrimeagen/git-worktree.nvim'
+
 call plug#end()
 
 " -----------------------------------------------------------------------------
@@ -256,6 +261,7 @@ nnoremap <leader>r <cmd>Telescope registers<cr>
 
 lua <<EOF
     require("telescope").load_extension("flutter")
+    require("telescope").load_extension("git_worktree")
 EOF
 
 " -----------------------------------------------------------------------------
