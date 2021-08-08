@@ -45,6 +45,9 @@ au FocusGained * :checktime
 let mapleader=","   " leader is comma
 
 set shell=/bin/bash
+
+nnoremap Y y$
+
 " -----------------------------------------------------------------------------
 "   -- Navigation --
 " -----------------------------------------------------------------------------
